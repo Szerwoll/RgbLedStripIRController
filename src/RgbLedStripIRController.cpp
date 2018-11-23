@@ -1,12 +1,13 @@
 #include <Arduino.h>
 #include <IRremote.h>
 
-// Define pins to easier assign values;
+#pragma region Globals
+
+// Define pins to easier assign values
 #define redPin 5
 #define greenPin 6
 #define bluePin 3
 
-// #pragma region Globals
 // Define ir receiver
 const int RECV_PIN = 7;
 IRrecv irrecv(RECV_PIN);
@@ -32,9 +33,9 @@ int blueValue = 255;
 // 3. decrease blue led, increase red led
 int rainbowMode = 0;
 
-// #pragma endregion
+#pragma endregion
 
-// #pragma region Functions Declaration
+#pragma region Functions Declaration
 
 void ModeSelect(decode_results results);
 void SetRGBColor();
@@ -43,7 +44,7 @@ void Rainbow();
 void LedOn();
 void BlinkDebug(int howMany);
 
-// #pragma endregion
+#pragma endregion
 
 
 // Initialization
