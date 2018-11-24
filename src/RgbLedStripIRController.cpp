@@ -42,7 +42,6 @@ void SetRGBColor();
 void SetRGBColor(int red, int green, int blue);
 void Rainbow();
 void LedOn();
-void BlinkDebug(int howMany);
 
 #pragma endregion
 
@@ -70,7 +69,6 @@ void loop()
         Serial.println(results.value, HEX);
     }
     Serial.println(results.value, HEX);
-    BlinkDebug(mode);
 }
 
 // Changes mode value to set other light mode
@@ -143,17 +141,6 @@ bool Reset()
     {
         return false;
     }
-}
-
-// ONLY FOR DEBUGING
-void BlinkDebug(int howMany)
-{
-    if (howMany == 0)
-        return;
-    digitalWrite(13, HIGH);
-    delay(1000 / howMany);
-    digitalWrite(13, LOW);
-    delay(1000 / howMany);
 }
 
 // Leds will be always on
