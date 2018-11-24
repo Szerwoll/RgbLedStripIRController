@@ -16,7 +16,7 @@ decode_results results;
 // Other global values
 int mode = 0;
 int speed = 1000; // 1 sec
-int fadeValue = 0; 
+int fadeValue = 0;
 
 bool redEnabled = false;
 bool greenEnabled = false;
@@ -45,7 +45,6 @@ void LedOn();
 void BlinkDebug(int howMany);
 
 #pragma endregion
-
 
 // Initialization
 void setup()
@@ -81,7 +80,7 @@ void ModeSelect(decode_results results)
     {
     case 0xEF1010EF:
         mode = 0;
-        redEnabled = !redEnabled; 
+        redEnabled = !redEnabled;
         break;
     case 0xEF108877:
         mode = 1;
@@ -121,14 +120,13 @@ void SetRGBColor(int red, int green, int blue)
 // Play selected mode
 void Play()
 {
-    
 }
 // Reset to default settings when reveived signal, except mode
 bool Reset()
 {
     if (irrecv.decode(&results))
     {
-        SetRGBColor(255,255,255);
+        SetRGBColor(255, 255, 255);
 
         redEnabled = false;
         greenEnabled = false;
@@ -150,17 +148,18 @@ bool Reset()
 // ONLY FOR DEBUGING
 void BlinkDebug(int howMany)
 {
-    if(howMany == 0) return;
+    if (howMany == 0)
+        return;
     digitalWrite(13, HIGH);
-    delay(1000/howMany);
+    delay(1000 / howMany);
     digitalWrite(13, LOW);
-    delay(1000/howMany);
+    delay(1000 / howMany);
 }
 
 // Leds will be always on
 void LedOn()
 {
-    SetRGBColor(255,255,255);
+    SetRGBColor(255, 255, 255);
 }
 // 0. decrease red led, increase green led
 // 1. decrease green led, increase blue led
@@ -168,48 +167,50 @@ void LedOn()
 void Rainbow()
 {
     // if irreceiver receive any signal signal
-    if(Reset())
+    if (Reset())
     {
         return;
     }
     // Initiates beginning of animation
-    else if (rainbowMode == -1)
+    else
     {
-        redEnabled = true;
-        greenEnabled = true;
-        blueEnabled = true;
+        switch (rainbowMode)
+        {
+        case -1:
+            redEnabled = true;
+            greenEnabled = true;
+            blueEnabled = true;
 
-        SetRGBColor(255,0,0);
-        rainbowMode = 0;
-    }
-    else if (rainbowMode == 0)
-    {
-        redValue -= 5;
-        greenValue += 5;
-        SetRGBColor();
-        if (greenValue >= 255)
-        {
-            rainbowMode = 1;
-        }
-    }
-    else if(rainbowMode == 1)
-    {
-        greenValue -= 5;
-        blueValue += 5;
-        SetRGBColor();
-        if (blueValue >= 255)
-        {
-            rainbowMode = 2;
-        }
-    }
-    else if(rainbowMode == 2)
-    {
-        blueValue -= 5;
-        redValue += 5;
-        SetRGBColor();
-        if(blueValue >= 255)
-        {
+            SetRGBColor(255, 0, 0);
             rainbowMode = 0;
+            break;
+
+        case 0:
+            redValue -= 5;
+            greenValue += 5;
+            SetRGBColor();
+            if (greenValue >= 255)
+            {
+                rainbowMode = 1;
+            }
+            break;
+
+        case 1;
+            greenValue -= 5;
+            blueValue += 5;
+            SetRGBColor();
+            if (blueValue >= 255) {
+                rainbowMode = 2;
+            } break;
+            case 2:
+            blueValue -= 5;
+            redValue += 5;
+            SetRGBColor();
+            if (blueValue >= 255)
+            {
+                rainbowMode = 0;
+            }
+            break;
         }
     }
 }
