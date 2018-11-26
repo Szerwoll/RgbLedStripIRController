@@ -3,5 +3,6 @@ Arduino controller for non-adressable RGB LED Strip
 
 ## Prerequisites
 * Arduino IDE
-> Or
-* Visual Studio Code + PlatformIO Addon `Recomended`
+> Optional
+* Visual Studio Code + Arduino Addon `Recomended`
+* Visual Studio Code + PlatformIO Addon `Highly recomended`
