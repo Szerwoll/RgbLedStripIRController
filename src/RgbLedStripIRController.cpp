@@ -15,8 +15,9 @@ decode_results results;
 
 // Other global values
 int mode = 0;
-int speed = 1000; // 1 sec
+int delaySpeed = 1000; // 1 sec
 int fadeValue = 0;
+int brightnesLimit = 0;
 
 bool redEnabled = false;
 bool greenEnabled = false;
@@ -42,6 +43,7 @@ void SetRGBColor();
 void SetRGBColor(int red, int green, int blue);
 void Rainbow();
 void LedOn();
+void SetBrightness( decode_results results);
 
 #pragma endregion
 
@@ -68,7 +70,6 @@ void loop()
         ModeSelect(results);
         Serial.println(results.value, HEX);
     }
-    Serial.println(results.value, HEX);
 }
 
 // Changes mode value to set other light mode
@@ -80,14 +81,17 @@ void ModeSelect(decode_results results)
         mode = 0;
         redEnabled = !redEnabled;
         break;
+
     case 0xEF108877:
         mode = 1;
         greenEnabled = !greenEnabled;
         break;
+
     case 0xEF1048B7:
         mode = 2;
         blueEnabled = !blueEnabled;
         break;
+
     default:
         Serial.println("Undefined");
         break;
@@ -118,6 +122,7 @@ void SetRGBColor(int red, int green, int blue)
 // Play selected mode
 void Play()
 {
+    
 }
 // Reset to default settings when reveived signal, except mode
 bool Reset()
@@ -132,11 +137,13 @@ bool Reset()
 
         rainbowMode = -1;
         speed = 1000;
+        brightnesLimit = 0;
         fadeValue = 0;
 
         ModeSelect(results);
         return true;
     }
+
     else
     {
         return false;
@@ -148,6 +155,20 @@ void LedOn()
 {
     SetRGBColor(255, 255, 255);
 }
+
+// Set brightness
+void SetBrightness(decode_results result)
+{
+    switch(result.value)
+    {
+        case 0xEF1120EF:
+            brightnesLimit += 25;
+            break;
+        case 0xCF1010DF:
+            brightnesLimit -= 25;
+    }
+}
+
 // 0. decrease red led, increase green led
 // 1. decrease green led, increase blue led
 // 3. decrease blue led, increase red led
@@ -176,7 +197,7 @@ void Rainbow()
             redValue -= 5;
             greenValue += 5;
             SetRGBColor();
-            if (greenValue >= 255)
+            if (greenValue >= 255 - brightnesLimit)
             {
                 rainbowMode = 1;
             }
@@ -186,14 +207,14 @@ void Rainbow()
             greenValue -= 5;
             blueValue += 5;
             SetRGBColor();
-            if (blueValue >= 255) {
+            if (blueValue >= 255 - brightnesLimit) {
                 rainbowMode = 2;
             } break;
             case 2:
             blueValue -= 5;
             redValue += 5;
             SetRGBColor();
-            if (blueValue >= 255)
+            if (blueValue >= 255 - brightnesLimit)
             {
                 rainbowMode = 0;
             }
