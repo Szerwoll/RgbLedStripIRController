@@ -76,27 +76,31 @@ void loop() {
 }
 
 //changes mode value to set other light mode
+/**
+ * Changes light mode
+ * 
+ * @param {decode_results} results - Value get form remote.
+ */
 void ModeSelect(decode_results results) {
     switch (results.value){
+        case 0xEF1010EF:
+            mode = 0;
+            redEnabled = !redEnabled;
+            break;
 
-    case 0xEF1010EF:
-        mode = 0;
-        redEnabled = !redEnabled;
-        break;
+        case 0xEF108877:
+            mode = 1;
+            greenEnabled = !greenEnabled;
+            break;
 
-    case 0xEF108877:
-        mode = 1;
-        greenEnabled = !greenEnabled;
-        break;
+        case 0xEF1048B7:
+            mode = 2;
+            blueEnabled = !blueEnabled;
+            break;
 
-    case 0xEF1048B7:
-        mode = 2;
-        blueEnabled = !blueEnabled;
-        break;
-
-    default:
-        Serial.println("Undefined");
-        break;
+        default:
+            Serial.println("Undefined");
+            break;
     }
 }
 
@@ -119,7 +123,14 @@ void SetRGBColor(int red, int green, int blue) {
 
 //play selected mode
 void Play() {
-    
+    switch (mode) {
+        case 0:
+            Rainbow();
+            break;
+        
+        default:
+            break;
+        }
 }
 
 //reset to default settings when received signal, except mode
@@ -140,8 +151,7 @@ bool Reset() {
         return true;
     }
 
-    else
-    {
+    else {
         return false;
     }
 }
@@ -152,8 +162,8 @@ void LedOn() {
 }
 
 //set brightness
-void SetBrightness(decode_results result){
-    switch(result.value){
+void SetBrightness(decode_results result) {
+    switch(result.value) {
 
         case 0xEF1120EF:
             brightnessLimit += 25;
@@ -175,41 +185,41 @@ void Rainbow() {
     //initiates beginning of animation
     else {
         switch (rainbowMode) {
-        case -1:
-            redEnabled = true;
-            greenEnabled = true;
-            blueEnabled = true;
+            case -1:
+                redEnabled = true;
+                greenEnabled = true;
+                blueEnabled = true;
 
-            SetRGBColor(255, 0, 0);
-            rainbowMode = 0;
-            break;
-
-        case 0:
-            redValue -= 5;
-            greenValue += 5;
-            SetRGBColor();
-            if (greenValue >= 255 - brightnessLimit)
-            {
-                rainbowMode = 1;
-            }
-            break;
-
-        case 1:
-            greenValue -= 5;
-            blueValue += 5;
-            SetRGBColor();
-            if (blueValue >= 255 - brightnessLimit) {
-                rainbowMode = 2;
-            } break;
-            case 2:
-            blueValue -= 5;
-            redValue += 5;
-            SetRGBColor();
-            if (blueValue >= 255 - brightnessLimit)
-            {
+                SetRGBColor(255, 0, 0);
                 rainbowMode = 0;
+                break;
+
+            case 0:
+                redValue -= 5;
+                greenValue += 5;
+                SetRGBColor();
+                if (greenValue >= 255 - brightnessLimit)
+                {
+                    rainbowMode = 1;
+                }
+                break;
+
+            case 1:
+                greenValue -= 5;
+                blueValue += 5;
+                SetRGBColor();
+                if (blueValue >= 255 - brightnessLimit) {
+                    rainbowMode = 2;
+                } break;
+                case 2:
+                blueValue -= 5;
+                redValue += 5;
+                SetRGBColor();
+                if (blueValue >= 255 - brightnessLimit)
+                {
+                    rainbowMode = 0;
+                }
+                break;
             }
-            break;
-        }
     }
 }
