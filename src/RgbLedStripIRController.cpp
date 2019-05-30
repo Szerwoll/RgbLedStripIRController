@@ -47,7 +47,7 @@ void SetRGBColor();
 void SetRGBColor(int red, int green, int blue);
 void Rainbow();
 void LedOn();
-void SetBrightness( decode_results results);
+void SetBrightnessLimit( decode_results results);
 
 #pragma endregion
 
@@ -67,11 +67,13 @@ void setup() {
 
 //main loop
 void loop() {
-    if (irrecv.decode(&results))
-    {
+    if (irrecv.decode(&results)) {
         ModeSelect(results);
+        SetBrightnessLimit(results);
         Serial.println(results.value, HEX);
         irrecv.resume();
+    } else {
+        Play();
     }
 }
 
@@ -82,7 +84,7 @@ void loop() {
  * @param {decode_results} results - Value get form remote.
  */
 void ModeSelect(decode_results results) {
-    switch (results.value){
+    switch (results.value) {
         case 0xEF1010EF:
             mode = 0;
             redEnabled = !redEnabled;
@@ -162,14 +164,22 @@ void LedOn() {
 }
 
 //set brightness
-void SetBrightness(decode_results result) {
+void SetBrightnessLimit(decode_results result) {
     switch(result.value) {
-
+        
         case 0xEF1120EF:
-            brightnessLimit += 25;
+            if ( brightnessLimit + 50 > 255 ) {
+                brightnessLimit = 255;
+            } else {
+                brightnessLimit += 25;
+            }
             break;
         case 0xCF1010DF:
-            brightnessLimit -= 25;
+            if ( brightnessLimit - 50 < 0){
+                brightnessLimit = 0;
+            } else {
+                brightnessLimit -= 25;
+            }
             break;
     }
 }
@@ -211,7 +221,8 @@ void Rainbow() {
                 if (blueValue >= 255 - brightnessLimit) {
                     rainbowMode = 2;
                 } break;
-                case 2:
+
+            case 2:
                 blueValue -= 5;
                 redValue += 5;
                 SetRGBColor();
@@ -220,6 +231,6 @@ void Rainbow() {
                     rainbowMode = 0;
                 }
                 break;
-            }
+        }
     }
 }
