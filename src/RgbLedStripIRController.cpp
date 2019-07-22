@@ -93,8 +93,6 @@ void loop() {
         };
         Serial.println(results.value, HEX);
         irrecv.resume();
-    } else {
-        Play();
     }
     Play();
 }
@@ -242,7 +240,7 @@ void LedOf() {
 // 3. decrease blue led, increase red led
 void Rainbow() {
     //if IR Receiver receive any signal signal
-    delay(250);
+    delay(10);
     switch (rainbowMode) {
         case -1:
             SetRGBColor(255, 0, 0);
@@ -315,7 +313,6 @@ void ChangeLedPower(decode_results results){
 
 void StaticLight() {
     SetRGBColor(255  * redPower, 255* greenPower, 255 * bluePower);
-
 }
 
 void Fade() {
