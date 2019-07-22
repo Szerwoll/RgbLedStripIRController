@@ -8,11 +8,11 @@
 #define greenPin 6
 #define bluePin 3
 
-//pilot buttons
+//remote buttons
 #define nextMode 0xFD609F
 #define previousMode 0xFD20DF
-#define brightUp 0xFD906F
-#define brightDown 0xFD807F
+#define brightUp 0xFD807F 
+#define brightDown 0xFD906F
 #define redUp 0xFD08F7
 #define redDown 0xFD28D7
 #define greenUp 0xFD8877
