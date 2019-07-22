@@ -61,15 +61,23 @@ void SetRGBColor();
 void SetRGBColor(int red, int green, int blue);
 void Rainbow();
 void StaticLight();
-void LedOn();
 void Fade();
+void Reset();
+void Play();
 void ChangeLedPower(decode_results results);
-void ChangeBrightnessLimit(double changedBrightness);
+void ChangeBrightness(double changedBrightness);
 void ChangeMode(int changedMode);
 
 #pragma endregion
 
-//initialization
+/**
+ * Initialize script
+ * 
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void setup() {
     //select pin modes
     pinMode(redPin, OUTPUT);
@@ -85,7 +93,14 @@ void setup() {
     // irrecv.blink13(true);
 }
 
-//main loop
+/**
+ * Main loop
+ * 
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void loop() {
     if (irrecv.decode(&results)){
         if (Menu(results)) {
@@ -101,6 +116,10 @@ void loop() {
  * Changes light mode
  * 
  * @param {decode_results} results - Value get form remote.
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
  */
 bool Menu(decode_results results) {
     switch (results.value){
@@ -136,7 +155,11 @@ bool Menu(decode_results results) {
  * Mode is changed by arrows.
  * To prevent switching to non-exist mode.
  * 
- * @param changedMode - mode + value form arrow press.
+ * @param {int} changedMode - mode + value form arrow press.
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
  */
 void ChangeMode(int changedMode) {
     if(changedMode > 2){
@@ -156,6 +179,15 @@ void ChangeMode(int changedMode) {
     }
 }
 
+/**
+ * Change brightness limit for all LED colors
+ * 
+ * @param {double} changedBrightness - changed brightness from arrow press
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void ChangeBrightness(double changedBrightness) {
     if(changedBrightness < 1.05 && changedBrightness > -0.05){
         brightnessLimit = changedBrightness;
@@ -164,13 +196,32 @@ void ChangeBrightness(double changedBrightness) {
     }
 }
 
+/**
+ * Set values from global values to pinouts
+ * 
+ * @return void();
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void SetRGBColor() {
     analogWrite(redPin, redValue * brightnessLimit * isOn);
     analogWrite(greenPin, greenValue * brightnessLimit * isOn);
     analogWrite(bluePin, blueValue * brightnessLimit * isOn);
 }
 
-//set values for led strip
+/**
+ * Saves new values to globals and set values for pinouts
+ * 
+ * @param {int} red - value for red led pin,
+ * @param {int} green - value for green led pin,
+ * @param {int} blue - value for blue led pin.
+ * 
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void SetRGBColor(int red, int green, int blue) {
     redValue = red,
     greenValue = green;
@@ -181,7 +232,14 @@ void SetRGBColor(int red, int green, int blue) {
     analogWrite(bluePin, blueValue * brightnessLimit * isOn);
 }
 
-//play selected mode
+/**
+ * Runs currently selected mode 
+ * 
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void Play() {
     switch (mode) {
         case 0:
@@ -204,11 +262,12 @@ void Play() {
 /**
  * Set default values when mode switched controller powered on.
  * 
- * @author Konrad Szerwiński,
- * @version 1.0,
  * @return void().
+ * 
+ * @author Szerwol,
+ * @version 1.0
  */
-bool Reset() {
+void Reset() {
         SetRGBColor(255, 255, 255);
 
         brightnessLimit = 1;
@@ -223,21 +282,22 @@ bool Reset() {
         greenPower = 1;
         bluePower = 1;
 
-        return true;
+        Serial.println("Reset");
 }
 
-//led's will be always on
-void LedOn() {
-    SetRGBColor(255, 255, 255);
-}
-
-void LedOf() {
-    SetRGBColor(0,0,0);
-}
-
-// 0. decrease red led, increase green led
-// 1. decrease green led, increase blue led
-// 3. decrease blue led, increase red led
+/**
+ * Rainbow mode!!!!
+ * 
+ * -1. init proper values,
+ * 0. decrease red led, increase green led
+ * 1. decrease green led, increase blue led
+ * 3. decrease blue led, increase red led
+ * 
+ * @return void();
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void Rainbow() {
     //if IR Receiver receive any signal signal
     delay(10);
@@ -279,42 +339,79 @@ void Rainbow() {
     }
 }
 
+/**
+ * Changes led power to change light color for static and fade mode
+ * 
+ * @param {decode_results} results - data received by IrReceiver
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void ChangeLedPower(decode_results results){
     switch (results.value)
     {
     case redUp:
         if (redPower < 1)
             redPower += 0.1;
+            Serial.print("redPower: ");
+            Serial.println(redPower);
         break;
     case redDown:
         if (redPower > 0)
             redPower -= 0.1;
+            Serial.print("redPower: ");
+            Serial.println(redPower);
         break;
     case greenUp:
         if (greenPower < 1)
             greenPower += 0.1;
+            Serial.print("greenPower: ");
+            Serial.println(greenPower);
         break;
     case greenDown: 
         if (greenPower > 0)
             greenPower -= 0.1;
+            Serial.print("greenPower: ");
+            Serial.println(greenPower);
         break;
     case blueUp:
         if (bluePower < 1)
             bluePower += 0.1;
+            Serial.print("bluePower: ");
+            Serial.println(bluePower);
         break;
     case blueDown: 
         if (bluePower > 0)
             bluePower -= 0.1;
+            Serial.print("bluePower: ");
+            Serial.println(bluePower);
         break;
     default:
         break;
     }
 }
 
+/**
+ * Only static color, no animations.
+ * 
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void StaticLight() {
     SetRGBColor(255  * redPower, 255* greenPower, 255 * bluePower);
 }
 
+/**
+ * Decrease and increase color power to get breathing effect
+ * 
+ * @return void()
+ * 
+ * @author Szerwol,
+ * @version 1.0
+ */
 void Fade() {
     delay(50);
     if(fadeValue + fadeIterator > 255) {
