@@ -7,5 +7,9 @@
         "Rrecv",
         "irrecv",
         "println"
-    ]
+    ],
+    "terminal.integrated.env.linux": {
+        "PATH": "/home/localuser/.platformio/penv/bin:/home/localuser/.platformio/penv:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/usr/sbin:/snap/bin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
 }

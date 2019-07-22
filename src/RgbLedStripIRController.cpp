@@ -93,6 +93,8 @@ void loop() {
         };
         Serial.println(results.value, HEX);
         irrecv.resume();
+    } else {
+        Play();
     }
     Play();
 }
